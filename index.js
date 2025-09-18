@@ -1,6 +1,5 @@
 // Importando as dependências necessárias
 const { Client, GatewayIntentBits } = require('discord.js');
-require('dotenv').config(); // Carregar variáveis de ambiente
 
 // Inicializando o cliente do Discord
 const client = new Client({
@@ -15,9 +14,14 @@ const client = new Client({
   ]
 });
 
-// Carregar o ID do canal de logs e o token do bot do arquivo .env
-const logChannelId = process.env.LOG_CHANNEL_ID;
-const botToken = process.env.BOT_TOKEN;
+// Carregar a variável de ambiente do token do bot
+const botToken = process.env.BOT_TOKEN;  // O Railway injeta automaticamente
+
+// Verificar se o token está correto
+if (!botToken) {
+  console.error('Erro: BOT_TOKEN não encontrado nas variáveis de ambiente!');
+  process.exit(1);  // Finaliza o processo caso o token não seja encontrado
+}
 
 // Quando o bot estiver pronto
 client.once('ready', () => {
@@ -27,9 +31,9 @@ client.once('ready', () => {
 // Evento: Mensagem criada
 client.on('messageCreate', (message) => {
   if (!message.author.bot) {
-    const channel = message.guild.channels.cache.get(logChannelId);
-    if (channel) {
-      channel.send(`[MSG] ${message.author.tag}: ${message.content}`);
+    const logChannel = message.guild.channels.cache.get(process.env.LOG_CHANNEL_ID);
+    if (logChannel) {
+      logChannel.send(`[MSG] ${message.author.tag}: ${message.content}`);
     } else {
       console.log('Não foi possível encontrar o canal de logs.');
     }
@@ -38,10 +42,9 @@ client.on('messageCreate', (message) => {
 
 // Evento: Reação adicionada
 client.on('messageReactionAdd', (reaction, user) => {
-  // Ignorar as reações de bots para evitar loops infinitos
   if (user.bot) return;
 
-  const channel = reaction.message.guild.channels.cache.get(logChannelId);
+  const channel = reaction.message.guild.channels.cache.get(process.env.LOG_CHANNEL_ID);
   if (channel) {
     channel.send(`👍 ${user.tag} reagiu com "${reaction.emoji.name}" na mensagem de ${reaction.message.author.tag}`);
   }
@@ -49,10 +52,9 @@ client.on('messageReactionAdd', (reaction, user) => {
 
 // Evento: Reação removida
 client.on('messageReactionRemove', (reaction, user) => {
-  // Ignorar as reações de bots para evitar loops infinitos
   if (user.bot) return;
 
-  const channel = reaction.message.guild.channels.cache.get(logChannelId);
+  const channel = reaction.message.guild.channels.cache.get(process.env.LOG_CHANNEL_ID);
   if (channel) {
     channel.send(`👋 ${user.tag} removeu a reação "${reaction.emoji.name}" na mensagem de ${reaction.message.author.tag}`);
   }
@@ -60,9 +62,8 @@ client.on('messageReactionRemove', (reaction, user) => {
 
 // Evento: Edição de mensagem
 client.on('messageUpdate', (oldMessage, newMessage) => {
-  // Verifica se a mensagem foi realmente alterada
   if (oldMessage.content !== newMessage.content) {
-    const channel = newMessage.guild.channels.cache.get(logChannelId);
+    const channel = newMessage.guild.channels.cache.get(process.env.LOG_CHANNEL_ID);
     if (channel) {
       channel.send(`✏️ A mensagem de ${oldMessage.author.tag} foi editada.\nAntes: "${oldMessage.content}"\nAgora: "${newMessage.content}"`);
     }
@@ -71,7 +72,7 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 
 // Evento: Exclusão de mensagem
 client.on('messageDelete', (message) => {
-  const channel = message.guild.channels.cache.get(logChannelId);
+  const channel = message.guild.channels.cache.get(process.env.LOG_CHANNEL_ID);
   if (channel) {
     channel.send(`🗑️ A mensagem de ${message.author.tag} foi excluída: "${message.content}"`);
   }
@@ -79,7 +80,7 @@ client.on('messageDelete', (message) => {
 
 // Evento: Membro entrou em um canal de voz
 client.on('voiceStateUpdate', (oldState, newState) => {
-  const channel = newState.guild.channels.cache.get(logChannelId);
+  const channel = newState.guild.channels.cache.get(process.env.LOG_CHANNEL_ID);
   if (!oldState.channel && newState.channel) {
     channel?.send(`🎤 ${newState.member.user.tag} entrou no canal de voz ${newState.channel.name}`);
   } else if (oldState.channel && !newState.channel) {
@@ -89,7 +90,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 
 // Evento: Canal criado
 client.on('channelCreate', (channel) => {
-  const logChannel = channel.guild.channels.cache.get(logChannelId);
+  const logChannel = channel.guild.channels.cache.get(process.env.LOG_CHANNEL_ID);
   if (logChannel) {
     logChannel.send(`📂 Canal criado: ${channel.name} (${channel.type})`);
   }
@@ -97,7 +98,7 @@ client.on('channelCreate', (channel) => {
 
 // Evento: Canal deletado
 client.on('channelDelete', (channel) => {
-  const logChannel = channel.guild.channels.cache.get(logChannelId);
+  const logChannel = channel.guild.channels.cache.get(process.env.LOG_CHANNEL_ID);
   if (logChannel) {
     logChannel.send(`🗑️ Canal deletado: ${channel.name} (${channel.type})`);
   }
@@ -105,7 +106,7 @@ client.on('channelDelete', (channel) => {
 
 // Evento: Membro entrou no servidor
 client.on('guildMemberAdd', (member) => {
-  const logChannel = member.guild.channels.cache.get(logChannelId);
+  const logChannel = member.guild.channels.cache.get(process.env.LOG_CHANNEL_ID);
   if (logChannel) {
     logChannel.send(`📥 ${member.user.tag} entrou no servidor.`);
   }
@@ -113,7 +114,7 @@ client.on('guildMemberAdd', (member) => {
 
 // Evento: Membro saiu do servidor
 client.on('guildMemberRemove', (member) => {
-  const logChannel = member.guild.channels.cache.get(logChannelId);
+  const logChannel = member.guild.channels.cache.get(process.env.LOG_CHANNEL_ID);
   if (logChannel) {
     logChannel.send(`📤 ${member.user.tag} saiu do servidor.`);
   }
@@ -121,7 +122,7 @@ client.on('guildMemberRemove', (member) => {
 
 // Evento: Membro banido
 client.on('guildBanAdd', (guild, user) => {
-  const logChannel = guild.channels.cache.get(logChannelId);
+  const logChannel = guild.channels.cache.get(process.env.LOG_CHANNEL_ID);
   if (logChannel) {
     logChannel.send(`🚫 ${user.tag} foi banido do servidor.`);
   }
@@ -129,11 +130,14 @@ client.on('guildBanAdd', (guild, user) => {
 
 // Evento: Membro desbanido
 client.on('guildBanRemove', (guild, user) => {
-  const logChannel = guild.channels.cache.get(logChannelId);
+  const logChannel = guild.channels.cache.get(process.env.LOG_CHANNEL_ID);
   if (logChannel) {
     logChannel.send(`✅ ${user.tag} foi desbanido do servidor.`);
   }
 });
 
 // Logando o bot com o token armazenado nas variáveis de ambiente
-client.login(botToken);
+client.login(botToken).catch((error) => {
+  console.error('Erro ao tentar fazer login:', error);
+  process.exit(1);
+});
