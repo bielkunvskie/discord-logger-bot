@@ -1,16 +1,19 @@
 {
   "name": "discord-logger-bot",
   "version": "1.0.0",
-  "description": "Bot para registrar eventos no Discord",
+  "description": "A simple Discord logger bot that logs messages to a specific channel",
   "main": "index.js",
   "scripts": {
-    "start": "node index.js"
+    "start": "npm install && node index.js"
   },
   "dependencies": {
-    "discord.js": "^14.22.1",
+    "discord.js": "^14.0.0",
+    "dotenv": "^16.0.0",
     "moment-timezone": "^0.5.34"
   },
-  "devDependencies": {
-    "dotenv": "^17.2.2"
-  }
+  "engines": {
+    "node": ">=16.0.0"
+  },
+  "author": "BielKunvskie",
+  "license": "MIT"
 }
