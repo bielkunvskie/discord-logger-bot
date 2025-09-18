@@ -24,9 +24,18 @@ if (!botToken) {
   process.exit(1);  // Finaliza o processo caso o token não seja encontrado
 }
 
+// Função para formatar a data e hora atual
+function getCurrentTime() {
+  const now = new Date();
+  const hours = now.getHours().toString().padStart(2, '0');
+  const minutes = now.getMinutes().toString().padStart(2, '0');
+  const seconds = now.getSeconds().toString().padStart(2, '0');
+  return `[${hours}:${minutes}:${seconds}]`;
+}
+
 // Quando o bot estiver pronto
 client.once('clientReady', () => {  // Atualizado para 'clientReady' para evitar o DeprecationWarning
-  console.log('✅ Bot logado e pronto!');
+  console.log(`${getCurrentTime()} ✅ Bot logado e pronto!`);
 });
 
 // Evento: Mensagem criada
@@ -34,7 +43,7 @@ client.on('messageCreate', (message) => {
   if (!message.author.bot) {
     const logChannel = message.guild.channels.cache.get(process.env.LOG_CHANNEL_ID);
     if (logChannel) {
-      logChannel.send(`[MSG] ${message.author.tag}: ${message.content}`);
+      logChannel.send(`${getCurrentTime()} [MSG] ${message.author.tag}: ${message.content}`);
     } else {
       console.log('Não foi possível encontrar o canal de logs.');
     }
@@ -47,7 +56,7 @@ client.on('messageReactionAdd', (reaction, user) => {
 
   const channel = reaction.message.guild.channels.cache.get(process.env.LOG_CHANNEL_ID);
   if (channel) {
-    channel.send(`👍 ${user.tag} reagiu com "${reaction.emoji.name}" na mensagem de ${reaction.message.author.tag}`);
+    channel.send(`${getCurrentTime()} 👍 ${user.tag} reagiu com "${reaction.emoji.name}" na mensagem de ${reaction.message.author.tag}`);
   }
 });
 
@@ -57,7 +66,7 @@ client.on('messageReactionRemove', (reaction, user) => {
 
   const channel = reaction.message.guild.channels.cache.get(process.env.LOG_CHANNEL_ID);
   if (channel) {
-    channel.send(`👋 ${user.tag} removeu a reação "${reaction.emoji.name}" na mensagem de ${reaction.message.author.tag}`);
+    channel.send(`${getCurrentTime()} 👋 ${user.tag} removeu a reação "${reaction.emoji.name}" na mensagem de ${reaction.message.author.tag}`);
   }
 });
 
@@ -66,7 +75,7 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
   if (oldMessage.content !== newMessage.content) {
     const channel = newMessage.guild.channels.cache.get(process.env.LOG_CHANNEL_ID);
     if (channel) {
-      channel.send(`✏️ A mensagem de ${oldMessage.author.tag} foi editada.\nAntes: "${oldMessage.content}"\nAgora: "${newMessage.content}"`);
+      channel.send(`${getCurrentTime()} ✏️ A mensagem de ${oldMessage.author.tag} foi editada.\nAntes: "${oldMessage.content}"\nAgora: "${newMessage.content}"`);
     }
   }
 });
@@ -75,7 +84,7 @@ client.on('messageUpdate', (oldMessage, newMessage) => {
 client.on('messageDelete', (message) => {
   const channel = message.guild.channels.cache.get(process.env.LOG_CHANNEL_ID);
   if (channel) {
-    channel.send(`🗑️ A mensagem de ${message.author.tag} foi excluída: "${message.content}"`);
+    channel.send(`${getCurrentTime()} 🗑️ A mensagem de ${message.author.tag} foi excluída: "${message.content}"`);
   }
 });
 
@@ -83,9 +92,9 @@ client.on('messageDelete', (message) => {
 client.on('voiceStateUpdate', (oldState, newState) => {
   const channel = newState.guild.channels.cache.get(process.env.LOG_CHANNEL_ID);
   if (!oldState.channel && newState.channel) {
-    channel?.send(`🎤 ${newState.member.user.tag} entrou no canal de voz ${newState.channel.name}`);
+    channel?.send(`${getCurrentTime()} 🎤 ${newState.member.user.tag} entrou no canal de voz ${newState.channel.name}`);
   } else if (oldState.channel && !newState.channel) {
-    channel?.send(`🔇 ${newState.member.user.tag} saiu do canal de voz ${oldState.channel.name}`);
+    channel?.send(`${getCurrentTime()} 🔇 ${newState.member.user.tag} saiu do canal de voz ${oldState.channel.name}`);
   }
 });
 
@@ -93,7 +102,7 @@ client.on('voiceStateUpdate', (oldState, newState) => {
 client.on('channelCreate', (channel) => {
   const logChannel = channel.guild.channels.cache.get(process.env.LOG_CHANNEL_ID);
   if (logChannel) {
-    logChannel.send(`📂 Canal criado: ${channel.name} (${channel.type})`);
+    logChannel.send(`${getCurrentTime()} 📂 Canal criado: ${channel.name} (${channel.type})`);
   }
 });
 
@@ -101,7 +110,7 @@ client.on('channelCreate', (channel) => {
 client.on('channelDelete', (channel) => {
   const logChannel = channel.guild.channels.cache.get(process.env.LOG_CHANNEL_ID);
   if (logChannel) {
-    logChannel.send(`🗑️ Canal deletado: ${channel.name} (${channel.type})`);
+    logChannel.send(`${getCurrentTime()} 🗑️ Canal deletado: ${channel.name} (${channel.type})`);
   }
 });
 
@@ -109,7 +118,7 @@ client.on('channelDelete', (channel) => {
 client.on('guildMemberAdd', (member) => {
   const logChannel = member.guild.channels.cache.get(process.env.LOG_CHANNEL_ID);
   if (logChannel) {
-    logChannel.send(`📥 ${member.user.tag} entrou no servidor.`);
+    logChannel.send(`${getCurrentTime()} 📥 ${member.user.tag} entrou no servidor.`);
   }
 });
 
@@ -117,7 +126,7 @@ client.on('guildMemberAdd', (member) => {
 client.on('guildMemberRemove', (member) => {
   const logChannel = member.guild.channels.cache.get(process.env.LOG_CHANNEL_ID);
   if (logChannel) {
-    logChannel.send(`📤 ${member.user.tag} saiu do servidor.`);
+    logChannel.send(`${getCurrentTime()} 📤 ${member.user.tag} saiu do servidor.`);
   }
 });
 
@@ -125,7 +134,7 @@ client.on('guildMemberRemove', (member) => {
 client.on('guildBanAdd', (guild, user) => {
   const logChannel = guild.channels.cache.get(process.env.LOG_CHANNEL_ID);
   if (logChannel) {
-    logChannel.send(`🚫 ${user.tag} foi banido do servidor.`);
+    logChannel.send(`${getCurrentTime()} 🚫 ${user.tag} foi banido do servidor.`);
   }
 });
 
@@ -133,7 +142,7 @@ client.on('guildBanAdd', (guild, user) => {
 client.on('guildBanRemove', (guild, user) => {
   const logChannel = guild.channels.cache.get(process.env.LOG_CHANNEL_ID);
   if (logChannel) {
-    logChannel.send(`✅ ${user.tag} foi desbanido do servidor.`);
+    logChannel.send(`${getCurrentTime()} ✅ ${user.tag} foi desbanido do servidor.`);
   }
 });
 
