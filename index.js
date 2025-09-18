@@ -1,6 +1,7 @@
 // Importando as dependências necessárias
 const { Client, GatewayIntentBits } = require('discord.js');
 require('dotenv').config(); // Carregar variáveis de ambiente
+const moment = require('moment-timezone'); // Importando moment-timezone para trabalhar com horários
 
 // Inicializando o cliente do Discord
 const client = new Client({
@@ -24,17 +25,17 @@ if (!botToken) {
   process.exit(1);  // Finaliza o processo caso o token não seja encontrado
 }
 
-// Função para formatar a data e hora atual
+// Função para formatar a data e hora atual no horário de Brasília (BRT)
 function getCurrentTime() {
-  const now = new Date();
-  const hours = now.getHours().toString().padStart(2, '0');
-  const minutes = now.getMinutes().toString().padStart(2, '0');
-  const seconds = now.getSeconds().toString().padStart(2, '0');
-  return `[${hours}:${minutes}:${seconds}]`;
+  const now = moment().tz('America/Sao_Paulo'); // Obtém o horário no fuso horário de Brasília
+  const hours = now.hours().toString().padStart(2, '0');
+  const minutes = now.minutes().toString().padStart(2, '0');
+  const seconds = now.seconds().toString().padStart(2, '0');
+  return `[${now.format('YYYY-MM-DD')} ${hours}:${minutes}:${seconds}]`; // Formato de hora completo
 }
 
 // Quando o bot estiver pronto
-client.once('clientReady', () => {  // Atualizado para 'clientReady' para evitar o DeprecationWarning
+client.once('ready', () => {  // Corrigido para 'ready' para evitar 'DeprecationWarning'
   console.log(`${getCurrentTime()} ✅ Bot logado e pronto!`);
 });
 
