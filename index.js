@@ -1,7 +1,8 @@
 // Importando as dependências necessárias
 const { Client, GatewayIntentBits } = require('discord.js');
+require('dotenv').config();  // Certifique-se de que a biblioteca dotenv foi instalada corretamente
 
-// Inicializando o cliente do Discord
+// Inicializando o cliente do Discord com os intents necessários
 const client = new Client({
   intents: [
     GatewayIntentBits.Guilds, // Permite o bot saber sobre guilds (servidores)
@@ -9,8 +10,7 @@ const client = new Client({
     GatewayIntentBits.MessageContent, // Necessário para acessar conteúdo de mensagens
     GatewayIntentBits.GuildMembers, // Permite o bot saber sobre membros do servidor
     GatewayIntentBits.GuildVoiceStates, // Necessário para monitorar canais de voz
-    GatewayIntentBits.GuildMessageReactions, // Para capturar reações de mensagens
-    GatewayIntentBits.MessageContent // Necessário para ler conteúdo das mensagens
+    GatewayIntentBits.GuildMessageReactions // Para capturar reações de mensagens
   ]
 });
 
@@ -139,5 +139,5 @@ client.on('guildBanRemove', (guild, user) => {
 // Logando o bot com o token armazenado nas variáveis de ambiente
 client.login(botToken).catch((error) => {
   console.error('Erro ao tentar fazer login:', error);
-  process.exit(1);
+  process.exit(1); // Encerra o processo caso o login falhe
 });
