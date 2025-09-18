@@ -1,23 +1,30 @@
+// Carregar as variáveis de ambiente
+require('dotenv').config();  
+
 // Importando as dependências necessárias
 const { Client, GatewayIntentBits } = require('discord.js');
-require('dotenv').config();  // Certifique-se de que a biblioteca dotenv foi instalada corretamente
 
-// Inicializando o cliente do Discord com os intents necessários
+// Verificando se as variáveis de ambiente estão sendo carregadas corretamente
+console.log('BOT_TOKEN:', process.env.BOT_TOKEN);  // Verifica se o token está sendo carregado corretamente
+console.log('LOG_CHANNEL_ID:', process.env.LOG_CHANNEL_ID);  // Verifica se o canal de log está sendo carregado
+
+// Inicializando o cliente do Discord
 const client = new Client({
   intents: [
-    GatewayIntentBits.Guilds, // Permite o bot saber sobre guilds (servidores)
-    GatewayIntentBits.GuildMessages, // Permite o bot ler mensagens
-    GatewayIntentBits.MessageContent, // Necessário para acessar conteúdo de mensagens
-    GatewayIntentBits.GuildMembers, // Permite o bot saber sobre membros do servidor
-    GatewayIntentBits.GuildVoiceStates, // Necessário para monitorar canais de voz
-    GatewayIntentBits.GuildMessageReactions // Para capturar reações de mensagens
+    GatewayIntentBits.Guilds,  // Permite o bot saber sobre guilds (servidores)
+    GatewayIntentBits.GuildMessages,  // Permite o bot ler mensagens
+    GatewayIntentBits.MessageContent,  // Necessário para acessar conteúdo de mensagens
+    GatewayIntentBits.GuildMembers,  // Permite o bot saber sobre membros do servidor
+    GatewayIntentBits.GuildVoiceStates,  // Necessário para monitorar canais de voz
+    GatewayIntentBits.GuildMessageReactions,  // Para capturar reações de mensagens
+    GatewayIntentBits.MessageContent  // Necessário para ler conteúdo das mensagens
   ]
 });
 
-// Carregar a variável de ambiente do token do bot
-const botToken = process.env.BOT_TOKEN;  // O Railway injeta automaticamente
+// Variável de ambiente para o token do bot
+const botToken = process.env.BOT_TOKEN; 
 
-// Verificar se o token está correto
+// Verificando se o token está correto
 if (!botToken) {
   console.error('Erro: BOT_TOKEN não encontrado nas variáveis de ambiente!');
   process.exit(1);  // Finaliza o processo caso o token não seja encontrado
@@ -139,5 +146,5 @@ client.on('guildBanRemove', (guild, user) => {
 // Logando o bot com o token armazenado nas variáveis de ambiente
 client.login(botToken).catch((error) => {
   console.error('Erro ao tentar fazer login:', error);
-  process.exit(1); // Encerra o processo caso o login falhe
+  process.exit(1);
 });
