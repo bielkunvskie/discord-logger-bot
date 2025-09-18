@@ -1,0 +1,11 @@
+# Ignorar o arquivo .env (onde fica o token do bot)
+.env
+
+# Ignorar a pasta node_modules (dependências do projeto)
+node_modules/
+
+# Ignorar arquivos de log do sistema operacional
+*.log
+
+# Ignorar arquivos do sistema macOS
+.DS_Store
