@@ -9,3 +9,4 @@ node_modules/
 
 # Ignorar arquivos do sistema macOS
 .DS_Store
+".env" 
