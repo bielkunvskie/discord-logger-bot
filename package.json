@@ -1,7 +1,7 @@
 {
   "name": "discord-logger-bot",
   "version": "1.0.0",
-  "description": "Um bot para logging de mensagens no Discord",
+  "description": "Bot para registrar logs no Discord com data e hora atual",
   "main": "index.js",
   "scripts": {
     "start": "node index.js"
@@ -9,11 +9,11 @@
   "dependencies": {
     "discord.js": "^14.22.1",
     "moment-timezone": "^0.5.48",
-    "dotenv": "17.2.2"
+    "dotenv": "^16.6.1"
   },
   "engines": {
-    "node": ">=18.0.0"
+    "node": ">=16.0.0"
   },
-  "author": "Seu Nome",
+  "author": "BielKunvskie",
   "license": "MIT"
 }
